@@ -1,19 +1,10 @@
 #pragma once
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
-#include "math.h"
 #include "Module.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
+#include "freertos/task.h"
+#include "math.h"
 #include <esp32_digital_led_lib.h>
-
-enum layerMode {
-  Add_e,
-  Normalize_e,
-  Overlay_e,
-  Absolute_e,
-  Brighter_e
-};
-
 
 struct NeopixelColor {
   uint8_t R = 0;
@@ -25,7 +16,6 @@ struct NeopixelColor {
 struct NeopixelLayer {
   NeopixelColor Color;
   void (*LayerFunc)(NeopixelLayer* layer) = nullptr;
-  layerMode Mode = Add_e;
   bool enabled = false;
   uint32_t timestamp = 0;
 };
@@ -35,21 +25,15 @@ public:
   void RunLoop();
   void SetNeoPixelColor(int color);
   static NeoPixelModuleClass* GetInstance();
-  int ShutDown();
-  int StartUp();
-  int Status();
   void ActivatePixel();
   void DeactivatePixel();
+  bool pixelActivated = true;
 
 private:
-  uint8_t FindFreeLayer();
   NeoPixelModuleClass();
-  static const uint8_t numberOfLayers = 4;
   strand_t Pixel[1];
-  NeopixelLayer Layers[numberOfLayers];
-  SemaphoreHandle_t layersSemaphore;
-  bool pixelActivated = true;
   uint32_t pixelActivateTimestamp = 0;
-
-  void ProcessLayer(pixelColor_t* pixel, uint8_t layerNum);
+  NeopixelLayer* layer;
+  void ApplyEffect(pixelColor_t* pixel);
+  void FlameEffect(NeopixelLayer* layer);
 };
