@@ -31,14 +31,14 @@ void NeoPixelModuleClass::DeactivatePixel() {
   pixelActivated = false;
 }
 
-void NeoPixelModuleClass::ApplyEffect(pixelColor_t* pixel)
-{
+void NeoPixelModuleClass::ApplyEffect(pixelColor_t* pixel) {
   pixel->r = layer->Color.R;
   pixel->g = layer->Color.G;
   pixel->b = layer->Color.B;
 }
 
 void NeoPixelModuleClass::RunLoop() {
+  vTaskDelay(20 / portTICK_RATE_MS);
   Pixel->pixels[0].r = 0;
   Pixel->pixels[0].g = 0;
   Pixel->pixels[0].b = 0;
@@ -48,16 +48,30 @@ void NeoPixelModuleClass::RunLoop() {
     ApplyEffect(&Pixel->pixels[0]);
   }
   digitalLeds_updatePixels(Pixel);
-
-  vTaskDelay(20 / portTICK_RATE_MS);
 };
 
 void NeoPixelModuleClass::FlameEffect(NeopixelLayer* layer) {
-  uint32_t value = 0;
-  value = 30 + (25 * sin(((xTaskGetTickCount() * portTICK_RATE_MS) % 5300) / (5300.0 / (2 * M_PI))));
+  // ESP_LOGI("flame","flame on")
+  uint32_t now = xTaskGetTickCount();
+  if (flameTargetTimestamp < now) {
+    uint32_t timeToTarget = (100 + (esp_random() / (UINT32_MAX / 600)));
+    oldflameValueTarget = flameValue;
+    flameValueTarget = 10 + (esp_random() / (UINT32_MAX / 25));
+    oldflameTargetTimestamp = now;
+    flameTargetTimestamp = now + timeToTarget;
+    ESP_LOGI("flame", "time to target %u", timeToTarget);
+    ESP_LOGI("flame", "target %u", flameValueTarget);
+  } else {
 
-  layer->Color.G = value * 0.75;
-  layer->Color.R = value;
-  layer->Color.B = 0;
+    flameValue = (((now - oldflameTargetTimestamp) * (flameValueTarget - oldflameValueTarget)) / (flameTargetTimestamp - oldflameValueTarget)) + oldflameValueTarget;
+    // flameValue = abs(flameTargetTimestamp - now) * oldflameValueTarget + now * flameValueTarget;
+    // flameValue = oldflameValueTarget
+    //NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
+    ESP_LOGI("flame", "value %u", flameValue);
+  }
+
+  // layer->Color.G = flameValue * 0.45; // + (esp_random()/(UINT32_MAX/5));
+  // layer->Color.R = flameValue;
+  // layer->Color.B = 0;
   layer->Color.Opac = 1;
 }

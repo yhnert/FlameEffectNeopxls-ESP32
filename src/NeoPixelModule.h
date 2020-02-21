@@ -33,6 +33,11 @@ private:
   NeoPixelModuleClass();
   strand_t Pixel[1];
   uint32_t pixelActivateTimestamp = 0;
+  uint32_t flameTargetTimestamp = 0;
+  uint32_t oldflameTargetTimestamp = 0;
+  uint32_t flameValueTarget = 0;
+  uint32_t oldflameValueTarget = 0;
+  uint32_t flameValue = 0;
   NeopixelLayer* layer;
   void ApplyEffect(pixelColor_t* pixel);
   void FlameEffect(NeopixelLayer* layer);
