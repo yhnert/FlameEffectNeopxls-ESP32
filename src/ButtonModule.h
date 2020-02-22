@@ -4,13 +4,14 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "NeoPixelModule.h"
+#include "NeoPixelModule_adv.h"
 
 class ButtonModuleClass : public ModuleClass
 {
 private:
 
   void ButtonAction();
-  NeoPixelModuleClass* pxl;
+  NeoPixelModuleClassADV* pxl;
 
 public:
   ButtonModuleClass();

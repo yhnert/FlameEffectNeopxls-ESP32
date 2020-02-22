@@ -1,11 +1,12 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "NeoPixelModule_adv.h"
 #include "NeoPixelModule.h"
 #include "ButtonModule.h"
 
 ButtonModuleClass* Button;
-NeoPixelModuleClass* Pixel;
+NeoPixelModuleClassADV* Pixel;
 
 void ModuleTask(void* pvParams) {
   ModuleClass* module = (ModuleClass*)pvParams;
@@ -17,7 +18,7 @@ void ModuleTask(void* pvParams) {
 
 
 extern "C" void app_main() {
-  Pixel = NeoPixelModuleClass::GetInstance();
+  Pixel = NeoPixelModuleClassADV::GetInstance();
   Button = new ButtonModuleClass();
 
   xTaskCreate(ModuleTask,Pixel->GetNameC(),15000,Pixel,15,NULL);

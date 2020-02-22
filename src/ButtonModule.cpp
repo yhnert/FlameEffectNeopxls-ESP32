@@ -1,13 +1,14 @@
 #include "ButtonModule.h"
 
 ButtonModuleClass::ButtonModuleClass() : ModuleClass("Button") {
-  gpio_set_direction(GPIO_NUM_25, GPIO_MODE_INPUT);
-  pxl = NeoPixelModuleClass::GetInstance();
+  gpio_set_pull_mode(GPIO_NUM_33, GPIO_PULLDOWN_ONLY);
+  gpio_set_direction(GPIO_NUM_33, GPIO_MODE_INPUT);
+  pxl = NeoPixelModuleClassADV::GetInstance();
 }
 
 void ButtonModuleClass::RunLoop() {
-  if (gpio_get_level(GPIO_NUM_25) == 0) {
-    // ButtonAction();
+  if (gpio_get_level(GPIO_NUM_33) == 1) {
+    ButtonAction();
   }
   vTaskDelay(50 / portTICK_PERIOD_MS);
 }
@@ -20,5 +21,5 @@ void ButtonModuleClass::ButtonAction() {
     pxl->ActivatePixel();
     printf("activating pxl");
   }
-  vTaskDelay(1000/portTICK_PERIOD_MS);
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
