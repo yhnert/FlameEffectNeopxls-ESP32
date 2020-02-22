@@ -41,4 +41,10 @@ private:
   NeopixelLayer* layer;
   void ApplyEffect(pixelColor_t* pixel);
   void FlameEffect(NeopixelLayer* layer);
+  //right eye
+  uint8_t bottomLeftPxlR = 1;
+  uint8_t bottomRightPxlR = 24;
+  //left eye
+  uint8_t bottomLeftPxlL = 1;
+  uint8_t bottomRightPxlL = 24;
 };

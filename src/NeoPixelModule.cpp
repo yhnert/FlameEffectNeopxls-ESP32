@@ -6,7 +6,7 @@ NeoPixelModuleClass::NeoPixelModuleClass() : ModuleClass("neopixel") {
   Pixel[0] =
       {
           .rmtChannel = 0,
-          .gpioNum = GPIO_NUM_26,
+          .gpioNum = GPIO_NUM_27,
           .ledType = LED_WS2812B_V1,
           .brightLimit = 16,
           .numPixels = 48,
@@ -64,9 +64,10 @@ void NeoPixelModuleClass::FlameEffect(NeopixelLayer* layer) {
   // ESP_LOGI("flame","flame on")
   uint32_t now = xTaskGetTickCount();
   if (flameTargetTimestamp < now) {
-    uint32_t timeToTarget = (10 + (esp_random() / (UINT32_MAX / 45)));
+    uint32_t rand = esp_random();
+    uint32_t timeToTarget = (10 + (rand / (UINT32_MAX / 45)));
     oldflameValueTarget = flameValue;
-    flameValueTarget = 25 + (esp_random() / (UINT32_MAX / 75));
+    flameValueTarget = 25 + (rand / (UINT32_MAX / 75));
     oldflameTargetTimestamp = now;
     flameTargetTimestamp = now + timeToTarget;
     // ESP_LOGI("flame", "time to target %u", timeToTarget);
