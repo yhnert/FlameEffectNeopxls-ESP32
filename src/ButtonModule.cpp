@@ -7,7 +7,7 @@ ButtonModuleClass::ButtonModuleClass() : ModuleClass("Button") {
 
 void ButtonModuleClass::RunLoop() {
   if (gpio_get_level(GPIO_NUM_25) == 0) {
-    ButtonAction();
+    // ButtonAction();
   }
   vTaskDelay(50 / portTICK_PERIOD_MS);
 }
