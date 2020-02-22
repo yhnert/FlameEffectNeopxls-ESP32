@@ -6,14 +6,23 @@ NeoPixelModuleClass::NeoPixelModuleClass() : ModuleClass("neopixel") {
   Pixel[0] =
       {
           .rmtChannel = 0,
+          .gpioNum = GPIO_NUM_26,
+          .ledType = LED_WS2812B_V1,
+          .brightLimit = 16,
+          .numPixels = 11,
+          .pixels = nullptr,
+          ._stateVars = nullptr};
+  Pixel[1] =
+      {
+          .rmtChannel = 1,
           .gpioNum = GPIO_NUM_27,
           .ledType = LED_WS2812B_V1,
           .brightLimit = 16,
-          .numPixels = 48,
+          .numPixels = 11,
           .pixels = nullptr,
           ._stateVars = nullptr};
 
-  digitalLeds_initStrands(Pixel, 1);
+  digitalLeds_initStrands(Pixel, 2);
 }
 
 NeoPixelModuleClass* NeoPixelModuleClass::GetInstance() {
@@ -39,7 +48,7 @@ void NeoPixelModuleClass::ApplyEffect(pixelColor_t* pixel) {
 
 void NeoPixelModuleClass::RunLoop() {
   vTaskDelay(10 / portTICK_RATE_MS);
-  for (int j = 0; j < 1; j++) {
+  for (int j = 0; j < 2; j++) {
     for (int i = 0; i < Pixel[j].numPixels; i++) {
       Pixel[j].pixels[i].r = 0;
       Pixel[j].pixels[i].g = 0;
@@ -49,7 +58,7 @@ void NeoPixelModuleClass::RunLoop() {
   // digitalLeds_updatePixels(Pixel);
 
   if (pixelActivated) {
-    for (int j = 0; j < 1; j++) {
+    for (int j = 0; j < 2; j++) {
       for (int i = 0; i < Pixel[j].numPixels; i++) {
         FlameEffect(layer);
         // vTaskDelay(10/portTICK_PERIOD_MS);
@@ -57,7 +66,8 @@ void NeoPixelModuleClass::RunLoop() {
       }
     }
   }
-  digitalLeds_updatePixels(Pixel);
+  digitalLeds_updatePixels(&Pixel[0]);
+  digitalLeds_updatePixels(&Pixel[1]);
 };
 
 void NeoPixelModuleClass::FlameEffect(NeopixelLayer* layer) {
